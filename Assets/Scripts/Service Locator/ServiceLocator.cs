@@ -15,11 +15,9 @@ namespace Service_Locator
 
         public static void Register(Type type, object instance)
         {
-            _services[type] = instance;
-
-            foreach (var service in _services)
+            if (!_services.TryAdd(type, instance))
             {
-                Debug.Log($"Services Type: {service.Key} and Services Value: {service.Value}");
+                Debug.LogWarning($"Service {type.Name} is already registered. Skipping.");
             }
         }
 

@@ -8,15 +8,22 @@ namespace Service_Locator
     {
         [SerializeField] private List<MonoBehaviour> _instances = new();
 
+        private static ServiceRegistrator _instance;
+        
         private void Awake()
         {
+            if (_instance != null)
+            {
+                Destroy(gameObject);
+                return;
+            }
+
+            _instance = this;
             DontDestroyOnLoad(gameObject);
             InitializeServices();
 
             foreach (var serviceInstance in _instances)
-            {
                 DontDestroyOnLoad(serviceInstance.gameObject);
-            }
         }
 
         private void Start()
