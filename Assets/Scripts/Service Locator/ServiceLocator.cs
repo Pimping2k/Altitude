@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 namespace Service_Locator
 {
-    public class ServiceLocator
+    [DefaultExecutionOrder(-4000)]
+    public static class ServiceLocator
     {
         private static readonly Dictionary<Type, object> _services = new();
         
@@ -49,6 +52,12 @@ namespace Service_Locator
         public static void Clear()
         {
             _services.Clear();
+        }
+        
+        public static async UniTask<bool> IsInitialized()
+        {
+            await UniTask.WaitUntil(() => _services.Values.OfType<IService>().All(service => service.IsInitialized));
+            return true;
         }
     }
 }
