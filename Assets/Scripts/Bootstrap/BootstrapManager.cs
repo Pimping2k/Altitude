@@ -10,12 +10,11 @@ namespace Bootstrap
 {
     public class BootstrapManager : MonoBehaviour
     {
-        [SerializeField] private CinemachineBrain _mainCamera;
+        [Header("General Settings")]
         [SerializeField] private Image _loadingBar;
         
         private async void Awake()
         {
-            DontDestroyOnLoad(_mainCamera);
             await ServiceLocator.IsInitialized();
             var operation = SceneManager.LoadSceneAsync(Tags.Scenes.GAMEPLAY);
             await LoadingScreen(operation);

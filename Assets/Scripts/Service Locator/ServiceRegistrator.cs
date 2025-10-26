@@ -12,6 +12,11 @@ namespace Service_Locator
         {
             DontDestroyOnLoad(gameObject);
             InitializeServices();
+
+            foreach (var serviceInstance in _instances)
+            {
+                DontDestroyOnLoad(serviceInstance.gameObject);
+            }
         }
 
         private void Start()

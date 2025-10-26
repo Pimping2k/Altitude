@@ -6,10 +6,9 @@ namespace Services
     public class InputService : MonoBehaviour, IInputService
     {
         private InputSystem_Actions _inputSystem;
-
-        private readonly CursorLockMode _cursorLockMode = CursorLockMode.Locked;
         
-        public CursorLockMode CursorLockMode => _cursorLockMode;
+        public CursorLockMode CursorLockMode { get; } = CursorLockMode.Locked;
+
         public InputSystem_Actions InputSystem { get; private set; }
         public InputSystem_Actions.UIActions UI { get; private set; }
         public InputSystem_Actions.PlayerActions Player { get; private set; }
@@ -20,8 +19,8 @@ namespace Services
         {
             _inputSystem = new InputSystem_Actions();
 
-            Cursor.lockState = _cursorLockMode;
-            Cursor.visible = _cursorLockMode == CursorLockMode.Locked;
+            Cursor.lockState = CursorLockMode;
+            Cursor.visible = CursorLockMode == CursorLockMode.Locked;
 
             Player = _inputSystem.Player;
             UI = _inputSystem.UI;
