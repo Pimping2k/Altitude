@@ -10,48 +10,51 @@ namespace Services
         private const int UNACTIVE_CAMERA_PRIORITY = -999;
         
         [Header("General Settings")]
-        [SerializeField] private CinemachineCamera _mainCamera;
+        [SerializeField] private Camera _mainUnityCamera;
+        [SerializeField] private CinemachineBrain _cinemachineBrain;
         
-        private CinemachineCamera _previousCamera;
+        private CinemachineCamera _currentVirtualCamera;
+        private CinemachineCamera _previousVirtualCamera;
         
         public bool IsInitialized { get; private set; }
 
         private void Awake()
         {
-            InitializeCamera();
+            DontDestroyOnLoad(_mainUnityCamera.gameObject);
             IsInitialized = true;
-        }
-
-        private void InitializeCamera()
-        {
-            var cameraInstance = Instantiate(_mainCamera);
-            DontDestroyOnLoad(cameraInstance);
-            _mainCamera.Priority = ACTIVE_CAMERA_PRIORITY;
         }
 
         #region Utilities
 
         public void OverlapCamera(CinemachineCamera overlapCamera)
         {
-            _previousCamera = _mainCamera;
-            
-            _previousCamera.Priority = UNACTIVE_CAMERA_PRIORITY;
+            if (_currentVirtualCamera != null)
+            {
+                _previousVirtualCamera = _currentVirtualCamera;
+                _previousVirtualCamera.Priority = UNACTIVE_CAMERA_PRIORITY;
+            }
+
             overlapCamera.Priority = ACTIVE_CAMERA_PRIORITY;
-            
-            _mainCamera = overlapCamera;
+            _currentVirtualCamera = overlapCamera;
         }
 
         public void RemoveOverlapCamera()
         {
-            _mainCamera.Priority = UNACTIVE_CAMERA_PRIORITY;
-            _previousCamera.Priority = ACTIVE_CAMERA_PRIORITY;
+            if (_previousVirtualCamera == null) return;
             
-            _mainCamera = _previousCamera;
+            _currentVirtualCamera.Priority = UNACTIVE_CAMERA_PRIORITY;
+            _previousVirtualCamera.Priority = ACTIVE_CAMERA_PRIORITY;
+            _currentVirtualCamera = _previousVirtualCamera;
         }
         
         public CinemachineCamera GetCamera()
         {
-            return _mainCamera;
+            return _currentVirtualCamera;
+        }
+        
+        public Camera GetUnityCamera()
+        {
+            return _mainUnityCamera;
         }
 
         #endregion

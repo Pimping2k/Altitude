@@ -20,6 +20,7 @@ namespace PlayerRelated
 
         private Vector2 _moveInput;
         private Vector3 _movement;
+        private bool _toggle;
         
         private void Awake()
         {
@@ -51,7 +52,6 @@ namespace PlayerRelated
             {
                 _inputService.Player.Move.performed += OnMovePerformed;
                 _inputService.Player.Move.canceled += OnMoveCanceled;
-                _inputService.Player.Jump.performed += OnJumpPerformed;
             }
             else
             {
@@ -68,11 +68,6 @@ namespace PlayerRelated
         private void OnMoveCanceled(InputAction.CallbackContext ctx)
         {
             _moveInput = Vector2.zero;
-        }
-
-        private void OnJumpPerformed(InputAction.CallbackContext ctx)
-        {
-            _cameraService.RemoveOverlapCamera();
         }
     }
 }
