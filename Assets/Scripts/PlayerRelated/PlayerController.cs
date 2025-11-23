@@ -14,13 +14,16 @@ namespace PlayerRelated
         [SerializeField] private Rigidbody _rigidbody;
         [Header("General Settings")]
         [SerializeField] private float _speed = 5f;
+        [SerializeField] private float _rotationSensitivity = 5f;
+        [SerializeField] private Vector2 _rotationClamedValue;
         
         private IInputService _inputService;
         private ICameraService _cameraService;
 
         private Vector2 _moveInput;
         private Vector3 _movement;
-        private bool _toggle;
+        private Vector2 _lookInput;
+        private Vector3 _currentRotation;
         
         private void Awake()
         {
@@ -40,8 +43,23 @@ namespace PlayerRelated
 
         private void FixedUpdate()
         {
-            _movement = new Vector3(_moveInput.x, 0f, _moveInput.y);
-            _rigidbody.linearVelocity = _movement * _speed * Time.fixedDeltaTime;
+            var cameraForward = _camera.transform.forward;
+            var cameraRight = _camera.transform.right;
+            
+            cameraForward.y = 0f;
+            cameraRight.y = 0f;
+            
+            cameraForward.Normalize();
+            cameraRight.Normalize();
+            
+            _movement = (cameraForward * _moveInput.y + cameraRight * _moveInput.x);
+            _rigidbody.linearVelocity = _movement * _speed;
+            
+            _currentRotation.x += _lookInput.y * _rotationSensitivity * Time.fixedDeltaTime * -1;
+            _currentRotation.y += _lookInput.x * _rotationSensitivity * Time.fixedDeltaTime;
+    
+            _currentRotation.x = Mathf.Clamp(_currentRotation.x, _rotationClamedValue.x, _rotationClamedValue.y);
+            transform.rotation = Quaternion.Euler(_currentRotation);
         }
 
         private void ToggleControl(bool state)
@@ -52,11 +70,17 @@ namespace PlayerRelated
             {
                 _inputService.Player.Move.performed += OnMovePerformed;
                 _inputService.Player.Move.canceled += OnMoveCanceled;
+                
+                _inputService.Player.Look.performed += OnLookPerformed;
+                _inputService.Player.Look.canceled += OnLookCanceled;
             }
             else
             {
                 _inputService.Player.Move.performed -= OnMovePerformed;
                 _inputService.Player.Move.canceled -= OnMoveCanceled;
+                
+                _inputService.Player.Look.performed -= OnLookPerformed;
+                _inputService.Player.Look.canceled -= OnLookCanceled;
             }
         }
 
@@ -68,6 +92,16 @@ namespace PlayerRelated
         private void OnMoveCanceled(InputAction.CallbackContext ctx)
         {
             _moveInput = Vector2.zero;
+        }
+
+        private void OnLookPerformed(InputAction.CallbackContext ctx)
+        {
+            _lookInput = ctx.ReadValue<Vector2>();
+        }
+
+        private void OnLookCanceled(InputAction.CallbackContext ctx)
+        {
+            _lookInput = Vector2.zero;
         }
     }
 }

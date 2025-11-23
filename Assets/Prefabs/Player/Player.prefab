@@ -182,6 +182,8 @@ MonoBehaviour:
   _camera: {fileID: 1101539352163264919}
   _rigidbody: {fileID: 4286507870792943732}
   _speed: 60
+  _rotationSensitivity: 5
+  _rotationClamedValue: {x: -45, y: 45}
 --- !u!136 &2649485484279171086
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -229,8 +231,8 @@ Rigidbody:
   m_ImplicitTensor: 1
   m_UseGravity: 1
   m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 84
+  m_Interpolate: 1
+  m_Constraints: 68
   m_CollisionDetection: 0
 --- !u!1 &3493002348614747073
 GameObject:
@@ -243,6 +245,7 @@ GameObject:
   - component: {fileID: 6118706595453247972}
   - component: {fileID: 1101539352163264919}
   - component: {fileID: 2354032761233564150}
+  - component: {fileID: 2019096060847847770}
   m_Layer: 0
   m_Name: Camera
   m_TagString: Untagged
@@ -322,8 +325,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   TrackerSettings:
     BindingMode: 4
-    PositionDamping: {x: 1, y: 1, z: 1}
+    PositionDamping: {x: 0, y: 0, z: 0}
     AngularDampingMode: 0
     RotationDamping: {x: 1, y: 1, z: 1}
     QuaternionDamping: 1
   FollowOffset: {x: 0, y: 1, z: 0}
+--- !u!114 &2019096060847847770
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3493002348614747073}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4afa82ae3200b82408d605c3dbdd1e38, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Damping: 0
