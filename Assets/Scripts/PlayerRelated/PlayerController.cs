@@ -52,7 +52,7 @@ namespace PlayerRelated
             cameraForward.Normalize();
             cameraRight.Normalize();
             
-            _movement = (cameraForward * _moveInput.y + cameraRight * _moveInput.x);
+            _movement = cameraForward * _moveInput.y + cameraRight * _moveInput.x;
             _rigidbody.linearVelocity = _movement * _speed;
             
             _currentRotation.x += _lookInput.y * _rotationSensitivity * Time.fixedDeltaTime * -1;
